@@ -61,7 +61,7 @@ COPY --from=builder --chown=nextjs:nodejs /app/node_modules ./node_modules/
 
 # Create Caddyfile for Coolify deployment
 RUN cat > Caddyfile << 'EOF'
-:3000 {
+:3001 {
     @transform_port_query {
         query XTransformPort=*
     }
@@ -76,7 +76,7 @@ RUN cat > Caddyfile << 'EOF'
     }
 
     handle {
-        reverse_proxy localhost:3000 {
+        reverse_proxy localhost:3001 {
             header_up Host {host}
             header_up X-Forwarded-For {remote_host}
             header_up X-Forwarded-Proto {scheme}
@@ -95,7 +95,7 @@ echo "🚀 Starting Next.js application with Prisma and Caddy..."
 
 # Set environment variables
 export NODE_ENV=production
-export PORT=3000
+export PORT=3001
 export HOSTNAME=0.0.0.0
 export DATABASE_URL="file:/data/db/custom.db"
 
@@ -122,7 +122,7 @@ if ! kill -0 $NEXT_PID 2>/dev/null; then
     exit 1
 fi
 
-echo "✅ Next.js server started on port 3000"
+echo "✅ Next.js server started on port 3001"
 
 # Start Caddy in foreground
 echo "🚀 Starting Caddy reverse proxy..."
@@ -137,11 +137,11 @@ RUN chmod +x start.sh
 USER nextjs
 
 # Expose port
-EXPOSE 3000
+EXPOSE 3001
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD bun -e "fetch('http://localhost:3000').then(r => r.ok ? process.exit(0) : process.exit(1)).catch(() => process.exit(1))"
+    CMD bun -e "fetch('http://localhost:3001').then(r => r.ok ? process.exit(0) : process.exit(1)).catch(() => process.exit(1))"
 
 # Start the application
 CMD ["./start.sh"]

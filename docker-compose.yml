@@ -8,10 +8,10 @@ services:
     container_name: pastor-counselling-app
     restart: unless-stopped
     ports:
-      - "3000:3000"
+      - "3001:3001"
     environment:
       - NODE_ENV=production
-      - PORT=3000
+      - PORT=3001
       - HOSTNAME=0.0.0.0
       - DATABASE_URL=file:/data/db/custom.db
     volumes:
@@ -19,7 +19,7 @@ services:
     networks:
       - app_network
     healthcheck:
-      test: ["CMD", "bun", "-e", "fetch('http://localhost:3000').then(r => r.ok ? process.exit(0) : process.exit(1)).catch(() => process.exit(1))"]
+      test: ["CMD", "bun", "-e", "fetch('http://localhost:3001').then(r => r.ok ? process.exit(0) : process.exit(1)).catch(() => process.exit(1))"]
       interval: 30s
       timeout: 10s
       retries: 3
